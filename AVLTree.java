@@ -4,12 +4,17 @@ import exceptions.ExceptionIsEmpty;
 import exceptions.ItemDuplicated;
 
 public class AVLTree<E extends Comparable<E>> extends BSTree<E>{
-    class NodeAVL extends Node {
+    class NodeAVL extends Node implements Comparable<NodeAVL>{
         protected int bf;
 
         public NodeAVL(E data) {
             super(data);
             this.bf = 0;
+        }
+
+        @Override
+        public int compareTo(NodeAVL otroDato){
+            return this.data.compareTo(otroDato.data);
         }
 
         public String toString() {
@@ -150,6 +155,124 @@ public class AVLTree<E extends Comparable<E>> extends BSTree<E>{
             throw new ExceptionIsEmpty("Arbol vacio ...");
         return this.root.getData();
     }
+
+    ///////////////////////////////////////////////////
+    ///////////////EJERCICIO 02 ////////////////////////
+    ///////////////////////////////////////////////////
+
+    public void delete(NodeAVL dato) {
+        this.current = this.root;
+        this.parent = null;
+        boolean isLeftChild = true;
+    
+        // Encontrar el nodo a eliminar
+        while (this.current != null && !dato.equals(this.current.getData())) {
+            this.parent = this.current;
+            if (dato.compareTo(this.current.getData()) < 0) {
+                isLeftChild = true;
+                this.current = this.current.left;
+            } else {
+                isLeftChild = false;
+                this.current = this.current.right;
+            }
+        }
+    
+        // El nodo no se encontró
+        if (this.current == null) {
+            return;
+        }
+    
+        // Caso 1: El nodo no tiene hijos
+        if (this.current.left == null && this.current.right == null) {
+            if (this.current == this.root) {
+                this.root = null;
+            } else if (isLeftChild) {
+                this.parent.left = null;
+            } else {
+                this.parent.right = null;
+            }
+        }
+        // Caso 2: El nodo tiene un solo hijo (derecho)
+        else if (this.current.left == null) {
+            if (this.current == this.root) {
+                this.root = this.current.right;
+            } else if (isLeftChild) {
+                this.parent.left = this.current.right;
+            } else {
+                this.parent.right = this.current.right;
+            }
+        }
+        // Caso 2: El nodo tiene un solo hijo (izquierdo)
+        else if (this.current.right == null) {
+            if (this.current == this.root) {
+                this.root = this.current.left;
+            } else if (isLeftChild) {
+                this.parent.left = this.current.left;
+            } else {
+                this.parent.right = this.current.left;
+            }
+        }
+        // Caso 3: El nodo tiene dos hijos
+        else {
+            Node successor = subBusqueda(this.current);
+    
+            if (this.current == this.root) {
+                this.root = successor;
+            } else if (isLeftChild) {
+                this.parent.left = successor;
+            } else {
+                this.parent.right = successor;
+            }
+    
+            successor.left = this.current.left;
+        }
+    
+        // Verificar si el árbol está desequilibrado y equilibrarlo si es necesario
+        this.root = balanceNode(this.root);
+    }
+    
+
+    private NodeAVL balanceNode(NodeAVL root) {
+
+        if (root == null){
+            return null;
+        }
+        
+        if (this.height) {
+            switch (root.bf) {
+                case -1: 
+                    root.bf = 0;
+                    this.height = true;
+                    break;
+                case 0: 
+                    root.bf = 1;
+                    this.height = false;
+                    break;
+                case 1: // bf = 2 
+                    root = balanceToLeft(root);
+                    this.height = !(root.bf == 0);
+                    break;
+            }
+        } else {
+            switch (root.bf) {
+                case 1:
+                    root.bf = 0;
+                    this.height = true;
+                    break;
+                case 0:
+                    root.bf = -1;
+                    this.height = false;
+                    break;
+                case -1: // bf = -2
+                    root = balanceToRight(root);
+                    this.height = !(root.bf == 0);
+                    break;
+            }
+        }
+    
+        return root;
+    }
+    
 
     @Override
     public String toString() {

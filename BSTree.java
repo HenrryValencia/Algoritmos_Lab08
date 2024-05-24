@@ -4,6 +4,7 @@ public class BSTree <E extends Comparable<E>>{
 	class Node {
 		protected E data;
 		protected Node left,right;
+		public int bf;
 		
 		public Node(E data) {
 			this (data,null,null);
@@ -22,7 +23,7 @@ public class BSTree <E extends Comparable<E>>{
 		public void setRight(Node x){
             this.right = x;
         }
-        public Node getRight() {
+        public BSTree<E>.Node getRight() {
             return right;
         }
 		public void setLeft(Node x){

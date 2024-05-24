@@ -234,5 +234,30 @@ public class TestAVL {
             e.printStackTrace();
         }
 
+        //PRUEBA DE EJERCICIO02
+
+        AVLTree<Integer> prueba2 = new AVLTree<>();
+
+        // Insertar algunos elementos
+        try {
+            prueba2.insert(10);
+            prueba2.insert(20);
+            prueba2.insert(30);
+            prueba2.insert(40);
+            prueba2.insert(50);
+            prueba2.insert(25);
+        } 
+        
+        catch (ItemDuplicated e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("después de las inserciones: " + prueba2.toString());
+
+        prueba2.delete(20);
+
+        // Imprimir el árbol después de la eliminación
+        System.out.println("después de eliminar el elemento 20: " + prueba2.toString());        
+
     }
 }
